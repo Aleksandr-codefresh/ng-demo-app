@@ -8,8 +8,8 @@ import { ShoppingListComponent } from '../shopping-list.component';
   styleUrls: ['./shopping-edit.component.scss']
 })
 export class ShoppingEditComponent implements OnInit {
-  @ViewChild('nameInput') nameInputRef: ElementRef;
-  @ViewChild('amountInput') amountInputRef: ElementRef;
+  @ViewChild('nameInput', { static: true }) nameInputRef: ElementRef;
+  @ViewChild('amountInput', { static: true }) amountInputRef: ElementRef;
   constructor(private shoppingListComponent: ShoppingListComponent) { }
 
   ngOnInit() {
