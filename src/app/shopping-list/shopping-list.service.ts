@@ -42,4 +42,9 @@ export class ShoppingListService {
   get startedEdtingObservable(): Observable<number> {
     return this.startedEdting.asObservable();
   }
+
+  updateIngredient(index: number, newIngredient: Ingredient): void {
+    this.ingredients[index] = newIngredient;
+    this.ingredientsChanged.next(this.getIngredients());
+  }
 }
