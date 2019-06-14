@@ -34,7 +34,7 @@
             [disabled]="f.invalid"
             >{{ editMode ? 'Update' : 'Add' }}</button>
           <button type="button" class="btn btn-danger">Delete</button>
-          <button type="button" class="btn btn-primary">Clear</button>
+          <button type="button" class="btn btn-primary" (click)="clearForm()">Clear</button>
         </div>
       </div>
     </form>
