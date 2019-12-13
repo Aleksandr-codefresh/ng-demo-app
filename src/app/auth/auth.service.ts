@@ -9,6 +9,7 @@ interface IAuthResponseData {
     refreshToken: string;
     expiresIn: string;
     localId: string;
+    kind: string;
 }
 
 @Injectable({
