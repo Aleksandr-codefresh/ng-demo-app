@@ -31,7 +31,7 @@ export class AuthComponent implements OnInit {
             this.isLoading = true;
             const { email, password } = form.value;
             if (this.isLoginMode) {
-                this.isLoading = false;
+                this.login(email, password);
             } else {
                 this.signup(email, password);
             }
@@ -42,6 +42,16 @@ export class AuthComponent implements OnInit {
 
     private signup(email: string, password: string) {
         this.authService.signup(email, password)
+            .pipe(finalize(() => this.isLoading = false))
+            .subscribe(
+                (response) => console.log(response),
+                (errorMessage) => this.error = errorMessage
+            );
+    }
+
+
+    private login(email: string, password: string) {
+        this.authService.login(email, password)
             .pipe(finalize(() => this.isLoading = false))
             .subscribe(
                 (response) => console.log(response),
