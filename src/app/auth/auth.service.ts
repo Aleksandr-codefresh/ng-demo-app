@@ -24,11 +24,15 @@ const API_KEY = '';
     providedIn: 'root'
 })
 export class AuthService {
-    user = new Subject<User>();
+    private user = new Subject<User>();
 
     constructor(
         private http: HttpClient
     ) {}
+
+    get userObservable(): Observable<User> {
+        return this.user.asObservable();
+    }
 
     signup(email: string, password: string): Observable<IAuthResponseData> {
         // tslint:disable-next-line:max-line-length
