@@ -26,6 +26,7 @@ const API_KEY = '';
 })
 export class AuthService {
     private user = new BehaviorSubject<User>(null);
+    private tokenExpirationTimeout: any;
 
     constructor(
         private http: HttpClient,
@@ -62,6 +63,26 @@ export class AuthService {
     }
 
 
+    autoLogin() {
+        const userData = localStorage.getItem('userData');
+        if (userData) {
+            const parsedUser = JSON.parse(userData);
+            const loadedUser = new User(
+                parsedUser.email,
+                parsedUser.id,
+                parsedUser.pToken,
+                new Date(parsedUser.tokenExpirationDate)
+            );
+
+            if (loadedUser.token) {
+                this.user.next(loadedUser);
+                const expirationDuration = new Date(parsedUser.tokenExpirationDate).getTime() - new Date().getTime();
+                this.autoLogout(expirationDuration);
+            }
+        }
+    }
+
+
     login(email: string, password: string): Observable<IAuthResponseData> {
         return this.http.post<IAuthResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`, {
                 email,
@@ -88,7 +109,20 @@ export class AuthService {
 
     logout() {
         this.user.next(null);
+        localStorage.removeItem('userData');
         this.router.navigate(['/auth']);
+
+        if (this.tokenExpirationTimeout) {
+            clearTimeout(this.tokenExpirationTimeout);
+        }
+        this.tokenExpirationTimeout = null;
+    }
+
+
+    autoLogout(expirationDuration: number) {
+        this.tokenExpirationTimeout = setTimeout(() => {
+            this.logout();
+        }, expirationDuration);
     }
 
 
@@ -101,5 +135,7 @@ export class AuthService {
             expitationDate
         );
         this.user.next(user);
+        this.autoLogout(expiresIn * 1000);
+        localStorage.setItem('userData', JSON.stringify(user));
     }
 }
