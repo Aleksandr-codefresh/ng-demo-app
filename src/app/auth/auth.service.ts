@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, throwError, Subject } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { get } from 'lodash';
+import { User } from './user.model';
 
 
 interface IAuthResponseData {
@@ -16,12 +17,15 @@ interface IAuthResponseData {
 }
 
 
+const API_KEY = '';
 
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
+    user = new Subject<User>();
+
     constructor(
         private http: HttpClient
     ) {}
@@ -33,15 +37,18 @@ export class AuthService {
             password,
             returnSecureToken: true
         })
-        .pipe(catchError((errorResponse) => {
-            let errorMessage = 'An unknown error occured!';
-            switch (get(errorResponse, 'error.error.message')) {
-                case 'EMAIL_EXISTS':
-                    errorMessage = 'This email exists already.';
-            }
+        .pipe(
+            catchError((errorResponse) => {
+                let errorMessage = 'An unknown error occured!';
+                switch (get(errorResponse, 'error.error.message')) {
+                    case 'EMAIL_EXISTS':
+                        errorMessage = 'This email exists already.';
+                }
 
-            return throwError(errorMessage);
-        }));
+                return throwError(errorMessage);
+            }),
+            tap((res) => this.handleAuthentication(res.email, res.localId, res.idToken, +res.expiresIn))
+        );
     }
 
 
@@ -51,17 +58,32 @@ export class AuthService {
                 password,
                 returnSecureToken: true
             })
-            .pipe(catchError((errorResponse) => {
-                let errorMessage = 'An unknown error occured!';
-                switch (get(errorResponse, 'error.error.errors[0].message')) {
-                    case 'INVALID_PASSWORD':
-                        errorMessage = 'This password is not correct.';
-                        break;
-                    case 'EMAIL_NOT_FOUND':
-                        errorMessage = 'This email does not exist';
-                }
+            .pipe(
+                catchError((errorResponse) => {
+                    let errorMessage = 'An unknown error occured!';
+                    switch (get(errorResponse, 'error.error.errors[0].message')) {
+                        case 'INVALID_PASSWORD':
+                            errorMessage = 'This password is not correct.';
+                            break;
+                        case 'EMAIL_NOT_FOUND':
+                            errorMessage = 'This email does not exist';
+                    }
 
-                return throwError(errorMessage);
-            }));
+                    return throwError(errorMessage);
+                }),
+                tap((res) => this.handleAuthentication(res.email, res.localId, res.idToken, +res.expiresIn))
+            );
+    }
+
+
+    private handleAuthentication(email: string, userId: string, token: string, expiresIn: number) {
+        const expitationDate = new Date(new Date().getTime() + expiresIn * 1000);
+        const user = new User(
+            email,
+            userId,
+            token,
+            expitationDate
+        );
+        this.user.next(user);
     }
 }
