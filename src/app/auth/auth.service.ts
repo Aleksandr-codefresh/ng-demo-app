@@ -6,7 +6,7 @@ import { get } from 'lodash';
 import { User } from './user.model';
 
 
-interface IAuthResponseData {
+export interface IAuthResponseData {
     idToken: string;
     email: string;
     refreshToken: string;
