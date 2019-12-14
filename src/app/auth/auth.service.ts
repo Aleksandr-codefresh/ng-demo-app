@@ -4,6 +4,7 @@ import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { get } from 'lodash';
 import { User } from './user.model';
+import { Router } from '@angular/router';
 
 
 export interface IAuthResponseData {
@@ -27,7 +28,8 @@ export class AuthService {
     private user = new BehaviorSubject<User>(null);
 
     constructor(
-        private http: HttpClient
+        private http: HttpClient,
+        private router: Router,
     ) {}
 
     get userObservable(): Observable<User> {
@@ -81,6 +83,12 @@ export class AuthService {
                 }),
                 tap((res) => this.handleAuthentication(res.email, res.localId, res.idToken, +res.expiresIn))
             );
+    }
+
+
+    logout() {
+        this.user.next(null);
+        this.router.navigate(['/auth']);
     }
 
 
