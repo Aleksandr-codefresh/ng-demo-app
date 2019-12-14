@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError, Subject } from 'rxjs';
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { get } from 'lodash';
 import { User } from './user.model';
@@ -24,7 +24,7 @@ const API_KEY = '';
     providedIn: 'root'
 })
 export class AuthService {
-    private user = new Subject<User>();
+    private user = new BehaviorSubject<User>(null);
 
     constructor(
         private http: HttpClient
@@ -32,6 +32,10 @@ export class AuthService {
 
     get userObservable(): Observable<User> {
         return this.user.asObservable();
+    }
+
+    get lastUser(): User {
+        return this.user.value;
     }
 
     signup(email: string, password: string): Observable<IAuthResponseData> {
