@@ -60,4 +60,9 @@ export class AuthComponent implements OnInit {
     private login(email: string, password: string) {
         return this.authService.login(email, password);
     }
+
+
+    onHandleError() {
+        this.error = null;
+    }
 }
