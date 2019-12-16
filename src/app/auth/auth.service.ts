@@ -18,7 +18,7 @@ export interface IAuthResponseData {
 }
 
 
-const API_KEY = '';
+const API_KEY = 'AIzaSyB8R96pJU2AEOfTDubdlHHYUpskdNO06Xo';
 
 
 @Injectable({
