@@ -21,8 +21,6 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
     HttpClientModule,
     RecipiesModule,
     ShoppingListModule,
