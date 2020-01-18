@@ -20,14 +20,6 @@ import { RecipiesRoutingModule } from './recipies-routing.module';
         ReactiveFormsModule,
         RecipiesRoutingModule
     ],
-    exports: [
-        RecipesComponent,
-        RecipeListComponent,
-        RecipeDetailComponent,
-        RecipeItemComponent,
-        RecipeStartComponent,
-        RecipeEditComponent,
-    ],
     declarations: [
         RecipesComponent,
         RecipeListComponent,
