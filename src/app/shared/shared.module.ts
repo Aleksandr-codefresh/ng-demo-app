@@ -3,7 +3,6 @@ import { PlaceholderDirective } from './placeholder/placeholder.directive';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 import { NgModule } from '@angular/core';
 
-import { SharedComponent } from './name.component';
 import { AlertComponent } from './alert/alert.component';
 import { CommonModule } from '@angular/common';
 
