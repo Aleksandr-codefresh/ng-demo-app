@@ -1,3 +1,4 @@
+import { SharedModule } from './shared/shared.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,14 +20,7 @@ import { ShoppingListModule } from './shopping-list/shopping-list.module';
   declarations: [
     AppComponent,
     HeaderComponent,
-    DropdownDirective,
     AuthComponent,
-    LoadingSpinnerComponent,
-    AlertComponent,
-    PlaceholderDirective
-  ],
-  entryComponents: [
-    AlertComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +29,8 @@ import { ShoppingListModule } from './shopping-list/shopping-list.module';
     ReactiveFormsModule,
     HttpClientModule,
     RecipiesModule,
-    ShoppingListModule
+    ShoppingListModule,
+    SharedModule
   ],
   providers: [{
       provide: HTTP_INTERCEPTORS,
