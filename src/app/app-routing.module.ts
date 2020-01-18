@@ -6,13 +6,13 @@ const appRoutes: Routes = [
     path: '', redirectTo: 'recipes', pathMatch: 'full'
   },
   {
-      path: 'auth', loadChildren: './auth/auth.module#AuthModule'
+      path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
   },
   {
-      path: 'recipes', loadChildren: './recipes/recipies.module#RecipiesModule'
+      path: 'recipes', loadChildren: () => import('./recipes/recipies.module').then(m => m.RecipiesModule)
   },
   {
-      path: 'shopping-list', loadChildren: './shopping-list/shopping-list.module#ShoppingListModule'
+      path: 'shopping-list', loadChildren: () => import('./shopping-list/shopping-list.module').then(m => m.ShoppingListModule)
   }
 ];
 
