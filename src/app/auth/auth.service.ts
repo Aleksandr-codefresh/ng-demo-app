@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
@@ -16,9 +17,6 @@ export interface IAuthResponseData {
     kind: string;
     registered?: boolean;
 }
-
-
-const API_KEY = 'AIzaSyB8R96pJU2AEOfTDubdlHHYUpskdNO06Xo';
 
 
 @Injectable({
@@ -43,7 +41,7 @@ export class AuthService {
 
     signup(email: string, password: string): Observable<IAuthResponseData> {
         // tslint:disable-next-line:max-line-length
-        return this.http.post<IAuthResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`, {
+        return this.http.post<IAuthResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`, {
             email,
             password,
             returnSecureToken: true
@@ -84,7 +82,8 @@ export class AuthService {
 
 
     login(email: string, password: string): Observable<IAuthResponseData> {
-        return this.http.post<IAuthResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`, {
+        return this.http.post<IAuthResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=
+            ${environment.firebaseAPIKey}`, {
                 email,
                 password,
                 returnSecureToken: true
