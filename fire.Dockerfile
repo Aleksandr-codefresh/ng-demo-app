@@ -47,6 +47,6 @@ RUN mkdir -p /app
 WORKDIR /app
 
 # cache dependencies layer
-COPY package.json yarn.lock ./
+COPY . .
 RUN yarn install
 RUN yarn build
