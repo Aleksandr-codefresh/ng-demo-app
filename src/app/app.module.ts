@@ -12,6 +12,8 @@ import { AuthInterceptorService } from './auth/auth-interceptor.service';
 import { RecipiesModule } from './recipes/recipies.module';
 import { ShoppingListModule } from './shopping-list/shopping-list.module';
 import { AuthModule } from './auth/auth.module';
+import { StoreModule } from '@ngrx/store';
+import { shoppingListReducer } from './shopping-list/store/shopping-list.reducer';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,10 @@ import { AuthModule } from './auth/auth.module';
     RecipiesModule,
     ShoppingListModule,
     SharedModule,
-    AuthModule
+    AuthModule,
+    StoreModule.forRoot({
+        shoppingList: shoppingListReducer
+    })
   ],
   providers: [{
       provide: HTTP_INTERCEPTORS,
