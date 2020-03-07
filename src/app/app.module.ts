@@ -1,3 +1,4 @@
+import { AuthEffects } from './auth/store/auth.effects';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -11,6 +12,7 @@ import { RecipiesModule } from './recipes/recipies.module';
 import { SharedModule } from './shared/shared.module';
 import { ShoppingListModule } from './shopping-list/shopping-list.module';
 import { appReducer } from './store/app.store';
+import { EffectsModule } from '@ngrx/effects';
 
 
 @NgModule({
@@ -26,7 +28,10 @@ import { appReducer } from './store/app.store';
     ShoppingListModule,
     SharedModule,
     AuthModule,
-    StoreModule.forRoot(appReducer)
+    StoreModule.forRoot(appReducer),
+    EffectsModule.forRoot([
+        AuthEffects
+    ])
   ],
   providers: [{
       provide: HTTP_INTERCEPTORS,
