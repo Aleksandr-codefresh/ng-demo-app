@@ -1,10 +1,14 @@
 import { Ingredient } from '../../shared/ingredient.module';
-import { ShoppingListActions, ADD_INGREDIENT, ADD_INGREDIENTS, UPDATE_INGREDIENT, DELETE_INGREDIENT, START_EDIT, STOP_EDIT } from './shopping-list.actions';
+import {
+    ADD_INGREDIENT,
+    ADD_INGREDIENTS,
+    DELETE_INGREDIENT,
+    ShoppingListActions,
+    START_EDIT, STOP_EDIT,
+    UPDATE_INGREDIENT
+} from './shopping-list.actions';
 
-export interface AppState {
-    shoppingList: ShoppingListState;
-}
-export interface ShoppingListState {
+export interface IShoppingListState {
     ingredients: Ingredient[];
     editedIngredient: Ingredient;
     editedIngredientIndex: number;
@@ -20,7 +24,7 @@ const initialState = {
 };
 
 
-export const shoppingListReducer = (state: ShoppingListState = initialState, action: ShoppingListActions) => {
+export const shoppingListReducer = (state: IShoppingListState = initialState, action: ShoppingListActions) => {
     switch (action.type) {
         case ADD_INGREDIENT:
             return {

@@ -1,19 +1,17 @@
-import { SharedModule } from './shared/shared.module';
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-
-import { AppComponent } from './app.component';
-import { HeaderComponent } from './header/header.component';
-import { AppRoutingModule } from './app-routing.module';
-import { AuthComponent } from './auth/auth.component';
-import { AuthInterceptorService } from './auth/auth-interceptor.service';
-import { RecipiesModule } from './recipes/recipies.module';
-import { ShoppingListModule } from './shopping-list/shopping-list.module';
-import { AuthModule } from './auth/auth.module';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { StoreModule } from '@ngrx/store';
-import { shoppingListReducer } from './shopping-list/store/shopping-list.reducer';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { AuthInterceptorService } from './auth/auth-interceptor.service';
+import { AuthModule } from './auth/auth.module';
+import { HeaderComponent } from './header/header.component';
+import { RecipiesModule } from './recipes/recipies.module';
+import { SharedModule } from './shared/shared.module';
+import { ShoppingListModule } from './shopping-list/shopping-list.module';
+import { appReducer } from './store/app.store';
+
 
 @NgModule({
   declarations: [
@@ -28,9 +26,7 @@ import { shoppingListReducer } from './shopping-list/store/shopping-list.reducer
     ShoppingListModule,
     SharedModule,
     AuthModule,
-    StoreModule.forRoot({
-        shoppingList: shoppingListReducer
-    })
+    StoreModule.forRoot(appReducer)
   ],
   providers: [{
       provide: HTTP_INTERCEPTORS,
