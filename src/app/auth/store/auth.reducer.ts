@@ -1,4 +1,4 @@
-import { AuthActions, LOGIN, LOGOUT, LOGIN_START, LOGIN_FAIL } from './auth.actions';
+import { AuthActions, AUTHENTICATE_SUCCESS, LOGOUT, LOGIN_START, AUTHENTICATE_FAIL, SIGNUP_START, CLEAR_ERROR } from './auth.actions';
 import { User } from './../user.model';
 
 
@@ -18,7 +18,7 @@ const initialState: IAuthState = {
 
 export const authReducer = (state = initialState, action: AuthActions) => {
     switch (action.type) {
-        case LOGIN:
+        case AUTHENTICATE_SUCCESS:
             const user = new User(
                 action.payload.email,
                 action.payload.userId,
@@ -39,17 +39,23 @@ export const authReducer = (state = initialState, action: AuthActions) => {
                 loading: false
             };
         case LOGIN_START:
+        case SIGNUP_START:
             return {
                 ...state,
                 authError: null,
                 loading: true
             };
-        case LOGIN_FAIL:
+        case AUTHENTICATE_FAIL:
             return {
                 ...state,
                 user: null,
                 authError: action.payload,
                 loading: false
+            };
+        case CLEAR_ERROR:
+            return {
+                ...state,
+                authError: null
             };
         default:
             return state;

@@ -4,6 +4,7 @@ import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
 import { IAppState } from '../store/app.store';
 import { Store } from '@ngrx/store';
+import { Logout } from '../auth/store/auth.actions';
 
 @Component({
   selector: 'app-header',
@@ -16,7 +17,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     constructor(
         private dataStorageService: DataStorageService,
-        private authService: AuthService,
         private store: Store<IAppState>
     ) {}
 
@@ -36,7 +36,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
 
     onLogout() {
-        this.authService.logout();
+        this.store.dispatch(new Logout());
     }
 
 
