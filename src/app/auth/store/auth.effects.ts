@@ -1,32 +1,29 @@
-import { AuthService } from './../auth.service';
-import { User } from './../user.model';
 import { HttpClient } from '@angular/common/http';
-import {
-    LOGIN_START,
-    LoginStart,
-    AUTHENTICATE_SUCCESS,
-    SIGNUP_START,
-    AuthenticateSuccess,
-    AuthenticateFail,
-    SignupStart,
-    LOGOUT,
-    AUTO_LOGIN
-} from './auth.actions';
-import { Actions, ofType, Effect } from '@ngrx/effects';
-import { switchMap, catchError, map, tap } from 'rxjs/operators';
-import { IAuthResponseData } from '../auth.service';
-import { environment } from 'src/environments/environment';
-import { of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { Actions, Effect, ofType, createEffect } from '@ngrx/effects';
 import { get } from 'lodash';
+import { of } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { IAuthResponseData } from '../auth.service';
+import { AuthService } from './../auth.service';
+import { User } from './../user.model';
+import {
+
+    signupStart,
+    authenticateSuccess,
+    authenticateFail,
+    loginStart,
+    logout,
+    autoLogin} from './auth.actions';
 
 
 const handleAuthentication = (resData: IAuthResponseData) => {
     const expirationDate = new Date(new Date().getTime() + +resData.expiresIn * 1000);
     const user = new User(resData.email, resData.localId, resData.idToken, expirationDate);
     localStorage.setItem('userData', JSON.stringify(user));
-    return new AuthenticateSuccess({
+    return authenticateSuccess({
         email: resData.email,
         userId: resData.localId,
         token: resData.idToken,
@@ -44,20 +41,19 @@ const handleError = (errorRes: any) => {
         case 'EMAIL_NOT_FOUND':
             errorMessage = 'This email does not exist';
     }
-    return of(new AuthenticateFail(errorMessage));
+    return of(authenticateFail({errorMessage}));
 };
 
 @Injectable()
 export class AuthEffects {
-    @Effect()
-    authSignup = this.actions$
+    authSignup = createEffect(() => this.actions$
         .pipe(
-            ofType(SIGNUP_START),
-            switchMap((signupAction: SignupStart) => {
+            ofType(signupStart),
+            switchMap((signupAction) => {
                 // tslint:disable-next-line:max-line-length
                 return this.http.post<IAuthResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`, {
-                        email: signupAction.payload.email,
-                        password: signupAction.payload.password,
+                        email: signupAction.email,
+                        password: signupAction.password,
                         returnSecureToken: true
                     })
                     .pipe(
@@ -68,17 +64,18 @@ export class AuthEffects {
                         catchError(handleError)
                     );
             })
-        );
+        )
+    );
 
-    @Effect()
-    authLogin = this.actions$
+
+    authLogin = createEffect(() => this.actions$
         .pipe(
-            ofType(LOGIN_START),
-            switchMap((authData: LoginStart) => {
+            ofType(loginStart),
+            switchMap((authData) => {
                 return this.http.post<IAuthResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=
                     ${environment.firebaseAPIKey}`, {
-                        email: authData.payload.email,
-                        password: authData.payload.password,
+                        email: authData.email,
+                        password: authData.password,
                         returnSecureToken: true
                     })
                     .pipe(
@@ -89,37 +86,39 @@ export class AuthEffects {
                         catchError(handleError)
                     );
             })
-        );
+        )
+    );
 
-    @Effect({ dispatch: false })
-    authRedirect = this.actions$
+
+    authRedirect = createEffect(() => this.actions$
         .pipe(
-            ofType(
-                AUTHENTICATE_SUCCESS
-            ),
-            tap((authSuccessAction: AuthenticateSuccess) => {
-                if (authSuccessAction.payload.redirect) {
+            ofType(authenticateSuccess),
+            tap((authSuccessAction) => {
+                if (authSuccessAction.redirect) {
                     this.router.navigate(['/']);
                 }
             })
-        );
+        ),
+        { dispatch: false }
+    );
 
 
-    @Effect({ dispatch: false })
-    authLogout = this.actions$
+    authLogout = createEffect(() => this.actions$
         .pipe(
-            ofType(LOGOUT),
+            ofType(logout),
             tap(() => {
                 this.authService.clearLogoutTimer();
                 localStorage.removeItem('userData');
                 this.router.navigate(['/auth']);
             })
-        );
+        ),
+        { dispatch: false }
+    );
 
-    @Effect()
-    autoLogin = this.actions$
+
+    autoLogin = createEffect(() => this.actions$
         .pipe(
-            ofType(AUTO_LOGIN),
+            ofType(autoLogin),
             map(() => {
                 const userData = localStorage.getItem('userData');
                 if (userData) {
@@ -134,7 +133,7 @@ export class AuthEffects {
                     if (loadedUser.token) {
                         const expirationDuration = new Date(parsedUser.tokenExpirationDate).getTime() - new Date().getTime();
                         this.authService.setLogoutTimer(expirationDuration);
-                        return new AuthenticateSuccess({
+                        return authenticateSuccess({
                             email: loadedUser.email,
                             userId: loadedUser.id,
                             token: loadedUser.token,
@@ -146,7 +145,8 @@ export class AuthEffects {
 
                 return { type: 'DUMMY' };
             })
-        );
+        )
+    );
 
     constructor(
         private http: HttpClient,

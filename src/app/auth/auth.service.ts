@@ -1,7 +1,7 @@
-import { IAppState } from './../store/app.store';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Logout } from './store/auth.actions';
+import { IAppState } from './../store/app.store';
+import { logout } from './store/auth.actions';
 
 
 export interface IAuthResponseData {
@@ -28,7 +28,7 @@ export class AuthService {
 
     setLogoutTimer(expirationDuration: number) {
         this.tokenExpirationTimer = setTimeout(() => {
-            this.store.dispatch(new Logout());
+            this.store.dispatch(logout());
         }, expirationDuration);
     }
 

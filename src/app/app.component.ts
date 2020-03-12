@@ -1,7 +1,7 @@
-import { AutoLogin } from './auth/store/auth.actions';
 import { Component, OnInit } from '@angular/core';
-import { IAppState } from './store/app.store';
 import { Store } from '@ngrx/store';
+import { autoLogin } from './auth/store/auth.actions';
+import { IAppState } from './store/app.store';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +15,6 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit() {
-      this.store.dispatch(new AutoLogin());
+      this.store.dispatch(autoLogin());
   }
 }

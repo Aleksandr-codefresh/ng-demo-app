@@ -1,4 +1,3 @@
-import { LoginStart, SignupStart, ClearError } from './store/auth.actions';
 import { PlaceholderDirective } from './../shared/placeholder/placeholder.directive';
 import { NgForm } from '@angular/forms';
 import { Component, OnInit, ComponentFactoryResolver, ViewChild, OnDestroy } from '@angular/core';
@@ -8,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { AlertComponent } from '../shared/alert/alert.component';
 import { IAppState } from '../store/app.store';
 import { Store } from '@ngrx/store';
+import { loginStart, signupStart, clearError } from './store/auth.actions';
 
 @Component({
   selector: 'app-auth',
@@ -47,12 +47,12 @@ export class AuthComponent implements OnInit, OnDestroy {
         if (form.valid) {
             const { email, password } = form.value;
             if (this.isLoginMode) {
-                this.store.dispatch(new LoginStart({
+                this.store.dispatch(loginStart({
                     email,
                     password
                 }));
             } else {
-                this.store.dispatch(new SignupStart({ email, password }));
+                this.store.dispatch(signupStart({ email, password }));
             }
 
             form.reset();
@@ -61,7 +61,7 @@ export class AuthComponent implements OnInit, OnDestroy {
 
 
     onHandleError() {
-        this.store.dispatch(new ClearError());
+        this.store.dispatch(clearError());
     }
 
 
