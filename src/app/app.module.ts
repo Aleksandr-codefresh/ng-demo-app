@@ -1,3 +1,4 @@
+import { environment } from './../environments/environment';
 import { AuthEffects } from './auth/store/auth.effects';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -13,6 +14,8 @@ import { SharedModule } from './shared/shared.module';
 import { ShoppingListModule } from './shopping-list/shopping-list.module';
 import { appReducer } from './store/app.store';
 import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
 
 
 @NgModule({
@@ -29,9 +32,13 @@ import { EffectsModule } from '@ngrx/effects';
     SharedModule,
     AuthModule,
     StoreModule.forRoot(appReducer),
+    StoreDevtoolsModule.instrument({
+        logOnly: environment.production
+    }),
     EffectsModule.forRoot([
         AuthEffects
-    ])
+    ]),
+    StoreRouterConnectingModule.forRoot()
   ],
   providers: [{
       provide: HTTP_INTERCEPTORS,
