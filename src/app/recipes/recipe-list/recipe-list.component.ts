@@ -2,26 +2,30 @@ import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/cor
 import { Recipe } from '../recipe.model';
 import { RecipieService } from '../recipie.service';
 import { Subscription } from 'rxjs';
+import { IAppState } from 'src/app/store/app.store';
+import { Store } from '@ngrx/store';
 
 @Component({
-  selector: 'app-recipe-list',
-  templateUrl: './recipe-list.component.html',
-  styleUrls: ['./recipe-list.component.scss']
+    selector: 'app-recipe-list',
+    templateUrl: './recipe-list.component.html',
+    styleUrls: ['./recipe-list.component.scss']
 })
 export class RecipeListComponent implements OnInit, OnDestroy {
-  recipes: Recipe[] = [];
-  private recipeChangeSubscription: Subscription;
-  constructor(private recipieService: RecipieService) { }
+    recipes: Recipe[] = [];
+    private recipeChangeSubscription: Subscription;
+    constructor(
+        private store: Store<IAppState>
+    ) { }
 
-  ngOnInit() {
-    this.recipeChangeSubscription = this.recipieService.recipeChangedObservable
-      .subscribe((recipes: Recipe[]) => {
-        this.recipes = recipes;
-      });
-    this.recipes = this.recipieService.getRecipies();
-  }
+    ngOnInit() {
+        this.recipeChangeSubscription = this.store.select('recipes')
+            .subscribe((recipesState) => {
+                console.log(recipesState);
+                this.recipes = recipesState.recipes;
+            });
+    }
 
-  ngOnDestroy(): void {
-    this.recipeChangeSubscription.unsubscribe();
-  }
+    ngOnDestroy(): void {
+        this.recipeChangeSubscription.unsubscribe();
+    }
 }

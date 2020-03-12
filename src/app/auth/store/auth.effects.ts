@@ -30,7 +30,8 @@ const handleAuthentication = (resData: IAuthResponseData) => {
         email: resData.email,
         userId: resData.localId,
         token: resData.idToken,
-        expirationDate
+        expirationDate,
+        redirect: true
     });
 };
 
@@ -96,7 +97,11 @@ export class AuthEffects {
             ofType(
                 AUTHENTICATE_SUCCESS
             ),
-            tap(() => this.router.navigate(['/']))
+            tap((authSuccessAction: AuthenticateSuccess) => {
+                if (authSuccessAction.payload.redirect) {
+                    this.router.navigate(['/']);
+                }
+            })
         );
 
 
@@ -133,7 +138,8 @@ export class AuthEffects {
                             email: loadedUser.email,
                             userId: loadedUser.id,
                             token: loadedUser.token,
-                            expirationDate: new Date(parsedUser.tokenExpirationDate)
+                            expirationDate: new Date(parsedUser.tokenExpirationDate),
+                            redirect: false
                         });
                     }
                 }

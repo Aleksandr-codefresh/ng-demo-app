@@ -4,6 +4,9 @@ import { RecipieService } from '../recipes/recipie.service';
 import { Recipe } from '../recipes/recipe.model';
 import { map, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { IAppState } from '../store/app.store';
+import { Store } from '@ngrx/store';
+import { SetRecipes } from '../recipes/store/recipe.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +14,8 @@ import { Observable } from 'rxjs';
 export class DataStorageService {
 
   constructor(private http: HttpClient,
-              private recipeService: RecipieService) {}
+              private recipeService: RecipieService,
+              private store: Store<IAppState>) {}
 
   storeRecipes() {
     const recipes = this.recipeService.getRecipies();
@@ -26,7 +30,7 @@ export class DataStorageService {
         return { ...recipe, ingredients: recipe.ingredients || [] };
       });
     }),
-    tap((recipes) => this.recipeService.setRecipes(recipes)));
+    tap((recipes) => this.store.dispatch(new SetRecipes(recipes))));
   }
 }
 
