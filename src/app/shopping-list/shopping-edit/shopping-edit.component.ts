@@ -1,12 +1,11 @@
-import { UpdateIngredient, DeleteIngredient, StopEdit } from './../store/shopping-list.actions';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { Ingredient } from '../../shared/ingredient.module';
 import { Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { AddIngredient } from '../store/shopping-list.actions';
 import { IAppState } from 'src/app/store/app.store';
+import { updateIngredient, addIngredient, stopEdit, deleteIngredient } from '../store/shopping-list.actions';
 
 @Component({
   selector: 'app-shopping-edit',
@@ -29,7 +28,7 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
           .subscribe((stateData) => {
               if (stateData.editedIngredientIndex > -1) {
                 this.editMode = true;
-                this.editedItem = stateData.editedIngredient;
+                this.editedItem = stateData.ingredients[stateData.editedIngredientIndex];
                 this.slForm.setValue({
                     name: this.editedItem.name,
                     amount: this.editedItem.amount
@@ -48,9 +47,9 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
       value.amount,
     );
     if (this.editMode) {
-        this.store.dispatch(new UpdateIngredient(newIngredient));
+        this.store.dispatch(updateIngredient({ ingredient: newIngredient }));
     } else {
-        this.store.dispatch(new AddIngredient(newIngredient));
+        this.store.dispatch(addIngredient({ ingredient: newIngredient }));
     }
     this.clearForm();
   }
@@ -58,16 +57,16 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   clearForm(): void {
     this.editMode = false;
     this.slForm.reset();
-    this.store.dispatch(new StopEdit());
+    this.store.dispatch(stopEdit());
   }
 
   deleteItem(): void {
-    this.store.dispatch(new DeleteIngredient());
+    this.store.dispatch(deleteIngredient());
     this.clearForm();
   }
 
   ngOnDestroy() {
-    this.store.dispatch(new StopEdit());
+    this.store.dispatch(stopEdit());
     this.subscription.unsubscribe();
   }
 }
