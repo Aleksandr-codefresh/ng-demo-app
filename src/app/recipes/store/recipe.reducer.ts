@@ -1,5 +1,6 @@
 import { Recipe } from '../recipe.model';
-import { RecipesActions, SET_RECIPES, ADD_RECIPE, UPDATE_RECIPE, DELETE_RECIPE } from './recipe.actions';
+import { setRecipes, addRecipe, updateRecipe, deleteRecipe } from './recipe.actions';
+import { Action, createReducer, on } from '@ngrx/store';
 
 export interface IRecipeState {
     recipes: Recipe[];
@@ -9,36 +10,13 @@ const initialState: IRecipeState = {
     recipes: []
 };
 
-export const recipeReducer = (state = initialState, action: RecipesActions) => {
-    switch (action.type) {
-        case SET_RECIPES:
-            return {
-                ...state,
-                recipes: [...action.payload]
-            };
-        case ADD_RECIPE:
-            return {
-                ...state,
-                recipes: [...state.recipes, action.payload]
-            };
-        case UPDATE_RECIPE:
-            const recipes = state.recipes.map((recipe) => {
-                if (recipe.id === action.payload.id) {
-                    return action.payload.newRecipe;
-                }
-
-                return recipe;
-            });
-            return {
-                ...state,
-                recipes
-            };
-        case DELETE_RECIPE:
-            return {
-                ...state,
-                recipes: state.recipes.filter((recipe) => recipe.id !== action.payload)
-            };
-        default:
-            return state;
-    }
+export const recipeReducer = (recipeState: IRecipeState | undefined, recipeAction: Action) => {
+    return createReducer(
+            initialState,
+            on(setRecipes, (state, action) => ({ ...state, recipes: [...action.recipes]})),
+            on(addRecipe, (state, action) => ({ ...state, recipes: [...state.recipes, action.recipe]})),
+            on(updateRecipe, (state, action) =>
+                ({ ...state, recipes: state.recipes.map((recipe) => recipe.id === action.id ? action.newRecipe : recipe) })),
+            on(deleteRecipe, (state, action) => ({ ...state, recipes: state.recipes.filter((recipe) => recipe.id !== action.id) })),
+        )(recipeState, recipeAction);
 };

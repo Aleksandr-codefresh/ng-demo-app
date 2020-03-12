@@ -1,9 +1,9 @@
-import { FetchRecipes, StoreRecipes } from './../recipes/store/recipe.actions';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { IAppState } from '../store/app.store';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import { Logout } from '../auth/store/auth.actions';
+import { IAppState } from '../store/app.store';
+import { fetchRecipes, storeRecipes } from './../recipes/store/recipe.actions';
 
 @Component({
   selector: 'app-header',
@@ -25,11 +25,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     onSaveData(): void {
-        this.store.dispatch(new StoreRecipes());
+        this.store.dispatch(storeRecipes());
     }
 
     onFetchData(): void {
-        this.store.dispatch(new FetchRecipes());
+        this.store.dispatch(fetchRecipes());
     }
 
 

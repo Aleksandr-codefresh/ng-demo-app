@@ -1,54 +1,10 @@
 import { Recipe } from '../recipe.model';
-import { Action } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
 
-export const SET_RECIPES = '[Recipes] SET_RECIPES';
-export const FETCH_RECIPES = '[Recipes] FETCH_RECIPES';
-export const ADD_RECIPE = '[Recipes] ADD_RECIPE';
-export const UPDATE_RECIPE = '[Recipes] UPDATE_RECIPE';
-export const DELETE_RECIPE = '[Recipes] DELETE_RECIPE';
-export const STORE_RECIPES = '[Recipes] STORE_RECIPES';
+export const setRecipes = createAction('[Recipes] SET_RECIPES', props<{ recipes: Recipe[]}>());
+export const addRecipe = createAction('[Recipes] ADD_RECIPE', props<{ recipe: Recipe }>());
+export const updateRecipe = createAction('[Recipes] UPDATE_RECIPE', props<{ id: string; newRecipe: Recipe }>());
+export const deleteRecipe = createAction('[Recipes] DELETE_RECIPE', props<{ id: string }>());
+export const fetchRecipes = createAction('[Recipes] FETCH_RECIPES');
+export const storeRecipes = createAction('[Recipes] STORE_RECIPES');
 
-export class SetRecipes implements Action {
-    readonly type = SET_RECIPES;
-
-    constructor(public payload: Recipe[]) {}
-}
-
-
-export class FetchRecipes implements Action {
-    readonly type = FETCH_RECIPES;
-}
-
-export class AddRecipe implements Action {
-    readonly type = ADD_RECIPE;
-
-    constructor(public payload: Recipe) {}
-}
-
-
-export class UpdateRecipe implements Action {
-    readonly type = UPDATE_RECIPE;
-
-    constructor(public payload: {
-        id: string;
-        newRecipe: Recipe;
-    }) {}
-}
-
-export class DeleteRecipe implements Action {
-    readonly type = DELETE_RECIPE;
-
-    constructor(public payload: string) {}
-}
-
-export class StoreRecipes implements Action {
-    readonly type = STORE_RECIPES;
-}
-
-
-export type RecipesActions = SetRecipes
-    | FetchRecipes
-    | AddRecipe
-    | UpdateRecipe
-    | DeleteRecipe
-    | StoreRecipes;

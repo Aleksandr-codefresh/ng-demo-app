@@ -7,8 +7,7 @@ import { map } from 'rxjs/operators';
 import { IAppState } from 'src/app/store/app.store';
 import uuid4 from 'uuid4';
 import { Recipe } from '../recipe.model';
-import { UpdateRecipe } from '../store/recipe.actions';
-import { AddRecipe } from './../store/recipe.actions';
+import { updateRecipe, addRecipe } from '../store/recipe.actions';
 
 @Component({
   selector: 'app-recipe-edit',
@@ -89,9 +88,9 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
             recipeId
         );
         if (this.editMode) {
-            this.store.dispatch(new UpdateRecipe({ id: this.id, newRecipe }));
+            this.store.dispatch(updateRecipe({ id: this.id, newRecipe }));
         } else {
-            this.store.dispatch(new AddRecipe(newRecipe));
+            this.store.dispatch(addRecipe({ recipe: newRecipe }));
         }
         this.onCancel();
     }
