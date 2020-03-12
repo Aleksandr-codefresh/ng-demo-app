@@ -1,6 +1,5 @@
-import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Recipe } from '../recipe.model';
-import { RecipieService } from '../recipie.service';
 import { Subscription } from 'rxjs';
 import { IAppState } from 'src/app/store/app.store';
 import { Store } from '@ngrx/store';
